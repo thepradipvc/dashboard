@@ -43,7 +43,7 @@ authApi.interceptors.response.use(
             path = window.location.pathname;
         }
 
-        const pathsToIgnore = ["signup", "signin"];
+        const pathsToIgnore = ["/signup", "/signin"];
         // Handle errors based on the error status code
         if (status === 401) {
             // Unauthorized
