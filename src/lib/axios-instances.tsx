@@ -43,7 +43,7 @@ authApi.interceptors.response.use(
             path = window.location.pathname;
         }
 
-        const pathsToIgnore = ["/auth/register", "/auth/login"];
+        const pathsToIgnore = ["signup", "signin"];
         // Handle errors based on the error status code
         if (status === 401) {
             // Unauthorized
@@ -53,7 +53,7 @@ authApi.interceptors.response.use(
 
             if (!pathsToIgnore.includes(path)) {
                 error.message = "Unauthorized. Please log in.";
-                navigate("/auth/login");
+                navigate("/signin");
             }
         }
 
