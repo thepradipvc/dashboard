@@ -10,10 +10,14 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
+import { googleLogin, signin } from '@/api/users';
+import { GoogleLogin } from "@react-oauth/google";
 
 const formSchema = z.object({
     email: z.string({ message: "Email is required" }).email({ message: 'Enter a valid email address' }),
@@ -21,6 +25,7 @@ const formSchema = z.object({
 });
 
 export default function SignupForm() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl');
     const form = useForm<z.infer<typeof formSchema>>({
@@ -31,8 +36,20 @@ export default function SignupForm() {
         }
     });
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        toast.success('Signed In Successfully!');
+    const signinMutation = useMutation({
+        mutationFn: signin,
+        onSuccess: (token) => {
+            toast.success('Signed in Successfully!');
+            localStorage.setItem("auth_token", token);
+            router.push(callbackUrl ?? "/")
+        },
+        onError: (error: any) => {
+            toast.error(error.message);
+        },
+    });
+
+    const onSubmit = async (userData: z.infer<typeof formSchema>) => {
+        signinMutation.mutate({ userData })
     };
 
     return (
@@ -79,7 +96,7 @@ export default function SignupForm() {
                     />
 
                     <Button className="ml-auto w-full !mt-6" type="submit">
-                        Sign Up
+                        Sign In
                     </Button>
                 </form>
             </Form>
@@ -94,6 +111,32 @@ export default function SignupForm() {
                 </div>
             </div>
             {/* Google signin */}
+            <div className='mt-4'>
+                <GoogleLogin
+                    text="signin_with"
+                    onSuccess={async (credentialResponse) => {
+                        try {
+                            const credential = credentialResponse.credential ?? "";
+                            const response = await googleLogin({ credential });
+                            localStorage.setItem("auth_token", response.accessToken);
+                            const userCreatedAt = new Date(response.user.createdAt);
+                            const now = new Date();
+                            const timeDifference = now.getTime() - userCreatedAt.getTime();
+                            const secondsDifference = timeDifference / 1000;
+                            if (secondsDifference <= 120) {
+                                router.push("/onboarding");
+                            } else {
+                                router.push("/");
+                            }
+                        } catch (error: any) {
+                            toast.error(error.message)
+                        }
+                    }}
+                    onError={() => {
+                        toast.error("Failed to login with google. Please try again")
+                    }}
+                />
+            </div>
         </div>
     );
 }

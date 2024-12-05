@@ -1,4 +1,5 @@
 'use client';
+import { signup, googleLogin } from '@/api/users';
 import { Button } from '@/components/ui/button';
 import {
     Form,
@@ -10,10 +11,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSearchParams } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
+import { GoogleLogin } from "@react-oauth/google";
 
 const formSchema = z.object({
     name: z.string({ message: "Name is required" }).min(3, "Name should be at least 3 characters long"),
@@ -22,8 +25,7 @@ const formSchema = z.object({
 });
 
 export default function SignupForm() {
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl');
+    const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -33,8 +35,20 @@ export default function SignupForm() {
         }
     });
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        toast.success('Signed In Successfully!');
+    const signupMutation = useMutation({
+        mutationFn: signup,
+        onSuccess: (token) => {
+            toast.success('Signed Up Successfully!');
+            localStorage.setItem("auth_token", token);
+            router.push("/onboarding");
+        },
+        onError: (error: any) => {
+            toast.error(error.message);
+        },
+    });
+
+    const onSubmit = async (userData: z.infer<typeof formSchema>) => {
+        signupMutation.mutate({ userData })
     };
 
     return (
@@ -53,6 +67,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input
                                         type="text"
+                                        disabled={signupMutation.isPending}
                                         placeholder="Enter your name..."
                                         {...field}
                                     />
@@ -71,6 +86,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input
                                         type="email"
+                                        disabled={signupMutation.isPending}
                                         placeholder="Enter your email..."
                                         {...field}
                                     />
@@ -89,6 +105,7 @@ export default function SignupForm() {
                                 <FormControl>
                                     <Input
                                         type="password"
+                                        disabled={signupMutation.isPending}
                                         placeholder="Shhh! keep it secret"
                                         {...field}
                                     />
@@ -98,7 +115,7 @@ export default function SignupForm() {
                         )}
                     />
 
-                    <Button className="ml-auto w-full !mt-6" type="submit">
+                    <Button disabled={signupMutation.isPending} className="ml-auto w-full !mt-6" type="submit">
                         Sign Up
                     </Button>
                 </form>
@@ -114,6 +131,32 @@ export default function SignupForm() {
                 </div>
             </div>
             {/* Google signup */}
+            <div className='mt-4'>
+                <GoogleLogin
+                    text="signup_with"
+                    onSuccess={async (credentialResponse) => {
+                        try {
+                            const credential = credentialResponse.credential ?? "";
+                            const response = await googleLogin({ credential });
+                            localStorage.setItem("auth_token", response.accessToken);
+                            const userCreatedAt = new Date(response.user.createdAt);
+                            const now = new Date();
+                            const timeDifference = now.getTime() - userCreatedAt.getTime();
+                            const secondsDifference = timeDifference / 1000;
+                            if (secondsDifference <= 120) {
+                                router.push("/onboarding");
+                            } else {
+                                router.push("/");
+                            }
+                        } catch (error: any) {
+                            toast.error(error.message)
+                        }
+                    }}
+                    onError={() => {
+                        toast.error("Failed to login with google. Please try again")
+                    }}
+                />
+            </div>
         </div>
     );
 }

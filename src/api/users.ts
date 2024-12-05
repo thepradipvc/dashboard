@@ -66,3 +66,17 @@ export const changeUsername = async ({
   const response = await api.put("/user/update-username", data);
   return "Username changed successfully";
 };
+
+type Response = {
+  accessToken: string;
+  user: {
+    email: string;
+    name: string;
+    createdAt: Date;
+  };
+};
+
+export const googleLogin = async ({ credential }: { credential: string }) => {
+  const response = await authApi.post("/google/login", { credential });
+  return transformSnakeCaseToCamelCase(response.data.data) as Response;
+};
