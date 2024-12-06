@@ -48,15 +48,11 @@ export default function SignupForm() {
         },
     });
 
-    const onSubmit = async (userData: z.infer<typeof formSchema>) => {
-        signinMutation.mutate({ userData })
-    };
-
     return (
         <div>
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={form.handleSubmit(userData => signinMutation.mutate({ userData }))}
                     className="w-full space-y-2"
                 >
                     <FormField
@@ -69,6 +65,7 @@ export default function SignupForm() {
                                     <Input
                                         type="email"
                                         placeholder="Enter your email..."
+                                        disabled={signinMutation.isPending}
                                         {...field}
                                     />
                                 </FormControl>
@@ -87,6 +84,7 @@ export default function SignupForm() {
                                     <Input
                                         type="password"
                                         placeholder="Shhh! keep it secret"
+                                        disabled={signinMutation.isPending}
                                         {...field}
                                     />
                                 </FormControl>
@@ -95,7 +93,7 @@ export default function SignupForm() {
                         )}
                     />
 
-                    <Button className="ml-auto w-full !mt-6" type="submit">
+                    <Button className="ml-auto w-full !mt-6" type="submit" disabled={signinMutation.isPending}>
                         Sign In
                     </Button>
                 </form>

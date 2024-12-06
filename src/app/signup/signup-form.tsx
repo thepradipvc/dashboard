@@ -47,15 +47,11 @@ export default function SignupForm() {
         },
     });
 
-    const onSubmit = async (userData: z.infer<typeof formSchema>) => {
-        signupMutation.mutate({ userData })
-    };
-
     return (
         <div>
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(onSubmit)}
+                    onSubmit={form.handleSubmit(userData => signupMutation.mutate({ userData }))}
                     className="w-full space-y-2"
                 >
                     <FormField
