@@ -5,7 +5,7 @@ import {
   Command,
   HandCoins,
   House,
-  Link
+  Link as LinkIcon
 } from "lucide-react"
 import * as React from "react"
 
@@ -20,6 +20,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
 
 const data = {
   user: {
@@ -36,7 +37,7 @@ const data = {
     {
       title: "Link In Bio",
       url: "/link-in-bio",
-      icon: Link,
+      icon: LinkIcon,
       items: [
         {
           title: "Link In Bio Design",
@@ -95,16 +96,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
-                </div>
-              </a>
+            <SidebarMenuButton className="hover:bg-inherit active:bg-inherit" size="lg" asChild>
+              <Link href="/">
+                <div className="text-2xl text-primary border border-primary py-1 px-4 rounded-3xl font-bold font-mono">Lucir</div>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
