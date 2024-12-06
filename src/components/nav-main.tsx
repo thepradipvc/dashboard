@@ -44,7 +44,7 @@ export function NavMain({
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
-              <SidebarMenuButton className={cn({ "bg-sidebar-primary hover:bg-sidebar-primary active:bg-sidebar-primary": pathname === item.url })} asChild tooltip={item.title}>
+              <SidebarMenuButton className={cn({ "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground active:bg-sidebar-primary active:text-sidebar-primary-foreground": pathname === item.url })} asChild tooltip={item.title}>
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
@@ -62,7 +62,7 @@ export function NavMain({
                     <SidebarMenuSub className="mt-1">
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton className={cn({ "bg-sidebar-primary hover:bg-sidebar-primary active:bg-sidebar-primary": pathname === subItem.url })} asChild>
+                          <SidebarMenuSubButton className={cn({ "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground active:bg-sidebar-primary active:text-sidebar-primary-foreground": pathname === subItem.url })} asChild>
                             <Link href={subItem.url}>
                               <span>{subItem.title}</span>
                             </Link>
