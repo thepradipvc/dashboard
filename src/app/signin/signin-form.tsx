@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -21,7 +21,7 @@ import { GoogleLogin } from "@react-oauth/google";
 
 const formSchema = z.object({
     email: z.string({ message: "Email is required" }).email({ message: 'Enter a valid email address' }),
-    password: z.string({ message: "Password is required" }).min(8, "Password should be at least 8 characters long")
+    password: z.string({ message: "Password is required" }).min(4, "Password should be at least 8 characters long")
 });
 
 export default function SignupForm() {

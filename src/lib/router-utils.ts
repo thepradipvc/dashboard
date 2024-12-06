@@ -1,7 +1,7 @@
 // To use nextjs router instance outside react components
 
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'nextjs-toploader/app';
 
 let routerInstance: ReturnType<typeof useRouter> | null = null;
 
