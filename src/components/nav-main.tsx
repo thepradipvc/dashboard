@@ -18,6 +18,8 @@ import {
   SidebarMenuSubItem
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 export function NavMain({
   items,
@@ -33,14 +35,16 @@ export function NavMain({
     }[]
   }[]
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
-      <SidebarMenu>
+      <SidebarMenu className="gap-2">
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton className={cn({ "bg-sidebar-primary hover:bg-sidebar-primary active:bg-sidebar-primary": pathname === item.url })} asChild tooltip={item.title}>
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
@@ -55,10 +59,10 @@ export function NavMain({
                     </SidebarMenuAction>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub>
+                    <SidebarMenuSub className="mt-1">
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton className={cn({ "bg-sidebar-primary hover:bg-sidebar-primary active:bg-sidebar-primary": pathname === subItem.url })} asChild>
                             <Link href={subItem.url}>
                               <span>{subItem.title}</span>
                             </Link>

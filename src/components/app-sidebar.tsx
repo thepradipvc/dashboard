@@ -1,15 +1,11 @@
 "use client"
 
 import {
-  BookOpen,
-  Bot,
   Calendar1,
   Command,
   HandCoins,
   House,
-  Link,
-  Settings2,
-  SquareTerminal
+  Link
 } from "lucide-react"
 import * as React from "react"
 
@@ -36,24 +32,17 @@ const data = {
       title: "Home",
       url: "/",
       icon: House,
-      // For Sub-menu
-      // ===========
-      // isActive: true,
-      // items: [
-      //   {
-      //     title: "History",
-      //     url: "/history",
-      //   },
-      //   {
-      //     title: "Starred",
-      //     url: "#",
-      //   },
-      // ],
     },
     {
       title: "Link In Bio",
       url: "/link-in-bio",
       icon: Link,
+      items: [
+        {
+          title: "Link In Bio Design",
+          url: "/link-in-bio/design"
+        },
+      ]
     },
     {
       title: "My Calendar",
